@@ -95,11 +95,10 @@ func (b *BeaconState) UpdateBlockRootAtIndex(idx uint64, blockRoot [32]byte) err
 	}
 
 	// Copy on write since this is a shared array.
+	b.lock.Lock()
 	r := b.BlockRoots()
 	r[idx] = blockRoot[:]
 	b.state.BlockRoots = r
-
-	b.lock.Lock()
 	b.markFieldAsDirty(blockRoots)
 	b.lock.Unlock()
 	return nil
@@ -123,11 +122,10 @@ func (b *BeaconState) UpdateStateRootAtIndex(idx uint64, stateRoot [32]byte) err
 	}
 
 	// Copy on write since this is a shared array.
+	b.lock.Lock()
 	r := b.StateRoots()
 	r[idx] = stateRoot[:]
 	b.state.StateRoots = r
-
-	b.lock.Lock()
 	b.markFieldAsDirty(stateRoots)
 	b.lock.Unlock()
 	return nil
